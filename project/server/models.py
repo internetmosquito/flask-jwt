@@ -52,7 +52,11 @@ class User(db.Model):
         """
         try:
             payload = jwt.decode(auth_token, current_app.config.get('SECRET_KEY'))
-            return payload['sub']
+            is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
+            if is_blacklisted_token:
+                return 'Token blacklisted. Please log in again.'
+            else:
+                return payload['sub']
         except jwt.ExpiredSignatureError:
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:
@@ -75,3 +79,13 @@ class BlacklistToken(db.Model):
 
     def __repr__(self):
         return '<id: token: {}'.format(self.token)
+
+    @staticmethod
+    def check_blacklist(token):
+        # check whether auth token has been blacklisted
+        res = BlacklistToken.query.filter_by(token=str(token)).first()
+        if res:
+            return True
+        else:
+            return False
+
