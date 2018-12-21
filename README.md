@@ -1,6 +1,6 @@
 # Flask JWT Auth
 
-[![Build Status](https://travis-ci.org/realpython/flask-jwt-auth.svg?branch=master)](https://travis-ci.org/realpython/flask-jwt-auth)
+[![Build Status](https://travis-ci.org/internetmosquito/flask-jwt.svg?branch=jwt-auth)](https://travis-ci.org/internetmosquito/flask-jwt)
 
 This is originally taken from the wonderful article from [RealPython](https://realpython.com/token-based-authentication-with-flask)
 I don't take any credit for it, just adapted some of the code to more of my likings.
@@ -85,11 +85,11 @@ So access the application at the address [http://localhost:5000/](http://localho
 Without coverage:
 
 ```sh
-$ python manage.py test
+$ flask test
 ```
 
 With coverage:
 
 ```sh
-$ python manage.py cov
+$ flask cov
 ```
