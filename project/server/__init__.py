@@ -4,6 +4,7 @@ from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 
+
 bcrypt = Bcrypt()
 db = SQLAlchemy()
 
@@ -30,6 +31,7 @@ def validate_token(token):
             raise Exception
     else:
         return None
+
 
 def create_app(config_name):
     app = Flask(__name__)

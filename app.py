@@ -1,8 +1,8 @@
 import os
-import click
 import coverage
 import unittest
 
+from flask_migrate import Migrate, MigrateCommand
 from project.server import create_app, db
 from dotenv import load_dotenv
 
@@ -15,6 +15,8 @@ app_settings = os.getenv(
     'project.server.config.DevelopmentConfig'
 )
 app = create_app(app_settings)
+
+migrate = Migrate(app, db)
 
 COV = coverage.coverage(
     branch=True,
