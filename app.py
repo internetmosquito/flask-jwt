@@ -1,12 +1,20 @@
-# manage.py
-
-
 import os
-import unittest
+import click
 import coverage
+import unittest
 
-from flask_script import Manager
-from flask_migrate import Migrate, MigrateCommand
+from project.server import create_app, db
+from dotenv import load_dotenv
+
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
+
+app_settings = os.getenv(
+    'APP_SETTINGS',
+    'project.server.config.DevelopmentConfig'
+)
+app = create_app(app_settings)
 
 COV = coverage.coverage(
     branch=True,
@@ -19,19 +27,10 @@ COV = coverage.coverage(
 )
 COV.start()
 
-from project.server import app, db, models
 
-
-migrate = Migrate(app, db)
-manager = Manager(app)
-
-# migrations
-manager.add_command('db', MigrateCommand)
-
-
-@manager.command
+@app.cli.command()
 def test():
-    """Runs the unit tests without test coverage."""
+    """Run tests under without coverage."""
     tests = unittest.TestLoader().discover('project/tests', pattern='test*.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
@@ -39,9 +38,9 @@ def test():
     return 1
 
 
-@manager.command
+@app.cli.command()
 def cov():
-    """Runs the unit tests with coverage."""
+    """Run the unit tests with coverage."""
     tests = unittest.TestLoader().discover('project/tests')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
@@ -58,17 +57,13 @@ def cov():
     return 1
 
 
-@manager.command
+@app.cli.command()
 def create_db():
-    """Creates the db tables."""
+    """Creates database."""
     db.create_all()
 
 
-@manager.command
-def drop_db():
-    """Drops the db tables."""
+@app.cli.command()
+def delete_db():
+    """Drops database."""
     db.drop_all()
-
-
-if __name__ == '__main__':
-    manager.run()

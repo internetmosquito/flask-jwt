@@ -28,7 +28,8 @@ class TestUserModel(BaseTestCase):
         db.session.commit()
         auth_token = user.encode_auth_token(user.id)
         decoded = User.decode_auth_token(auth_token)
-        self.assertEquals(user.id, decoded)
+        self.assertEqual(user.id, decoded)
+
 
 if __name__ == '__main__':
     unittest.main()
